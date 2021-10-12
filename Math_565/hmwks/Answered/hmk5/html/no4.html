@@ -1,0 +1,195 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>no4</title><meta name="generator" content="MATLAB 9.8"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-12-17"><meta name="DC.source" content="no4.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput">clear <span class="string">all</span>;
+close <span class="string">all</span>;
+
+J =@(x,t) 1/pi*cos(t -x*sin(t));
+
+N = 20; h = 20/N;  a=0; b=pi; n = 1e6; h1 = (b-a)/n;
+t = linspace(0,pi,n+1);
+
+x = [];
+T = [];
+<span class="keyword">for</span> i = 0:19
+    x1 = i*h;
+    x = [x,x1];
+<span class="keyword">end</span>
+
+<span class="keyword">for</span> i = 1:20
+     <span class="comment">%trapezoidal rule</span>
+    T1 = (h1/2)*(J(x(i),t(1))+2*sum(J(x(i),t(2:n)))+J(x(i),t(end)));
+    T = [T,T1];
+<span class="keyword">end</span>
+
+<span class="comment">%exact</span>
+J1=besselj(1,x);
+error = abs(J1 - T);
+
+<span class="comment">%table</span>
+N = [1:20]';
+Table = table(N(:),error(:),<span class="string">'VariableNames'</span>,{<span class="string">'N'</span>,<span class="string">'Error'</span>})
+
+fprintf(<span class="string">'Hence error values are approximately 10^-16'</span>);
+
+<span class="comment">%convergence</span>
+fprintf(<span class="string">'Exponential convergence, due to the fact that we are dealing with a periodic integral'</span>);
+
+figure(1)
+loglog(N,error, <span class="string">'-o'</span>); grid <span class="string">on</span>
+xlabel(<span class="string">'N'</span>);ylabel(<span class="string">'Error'</span>);
+title(<span class="string">'Error \approx 10^-^1^6 vs N'</span>);
+
+figure(2)
+plot(x,T); grid <span class="string">on</span>
+xlabel(<span class="string">'x'</span>);ylabel(<span class="string">'J'</span>);
+title(<span class="string">'Bessel function vs x'</span>);
+hold <span class="string">on</span>
+plot(x,J1,<span class="string">'-o'</span>);
+legend(<span class="string">'J_t_r_a_p_e_z_i_o_d_a_l'</span>,<span class="string">'J_e_x_a_c_t'</span>)
+</pre><pre class="codeoutput">
+Table =
+
+  20&times;2 table
+
+    N       Error   
+    __    __________
+
+     1    9.4459e-16
+     2    3.7748e-15
+     3    2.2204e-16
+     4    3.4972e-15
+     5    2.2204e-16
+     6    1.7764e-15
+     7    1.9429e-15
+     8    1.6575e-15
+     9    7.7438e-15
+    10    4.3299e-15
+    11    1.2421e-15
+    12    4.7462e-15
+    13    8.4099e-15
+    14    2.2343e-15
+    15    2.4702e-15
+    16    7.2442e-15
+    17    7.9103e-16
+    18    1.6653e-16
+    19    3.1641e-15
+    20    4.6213e-15
+
+Hence error values are approximately 10^-16Exponential convergence, due to the fact that we are dealing with a periodic integral</pre><img vspace="5" hspace="5" src="no4_01.png" alt=""> <img vspace="5" hspace="5" src="no4_02.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clear all;
+close all;
+
+J =@(x,t) 1/pi*cos(t -x*sin(t));
+
+N = 20; h = 20/N;  a=0; b=pi; n = 1e6; h1 = (b-a)/n;
+t = linspace(0,pi,n+1);
+
+x = [];
+T = [];
+for i = 0:19
+    x1 = i*h;
+    x = [x,x1];
+end
+
+for i = 1:20
+     %trapezoidal rule 
+    T1 = (h1/2)*(J(x(i),t(1))+2*sum(J(x(i),t(2:n)))+J(x(i),t(end)));
+    T = [T,T1];
+end
+
+%exact
+J1=besselj(1,x);
+error = abs(J1 - T); 
+
+%table
+N = [1:20]';
+Table = table(N(:),error(:),'VariableNames',{'N','Error'})  
+
+fprintf('Hence error values are approximately 10^-16');
+
+%convergence
+fprintf('Exponential convergence, due to the fact that we are dealing with a periodic integral');
+
+figure(1)
+loglog(N,error, '-o'); grid on
+xlabel('N');ylabel('Error');
+title('Error \approx 10^-^1^6 vs N');
+
+figure(2)
+plot(x,T); grid on
+xlabel('x');ylabel('J');
+title('Bessel function vs x');
+hold on
+plot(x,J1,'-o');
+legend('J_t_r_a_p_e_z_i_o_d_a_l','J_e_x_a_c_t')
+
+##### SOURCE END #####
+--></body></html>

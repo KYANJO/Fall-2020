@@ -1,0 +1,551 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>final_project</title><meta name="generator" content="MATLAB 9.8"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-12-19"><meta name="DC.source" content="final_project.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="comment">% This program uses 6th order approximation of spartial derivatives. It</span>
+<span class="comment">% numerically solves the elastic wave equation.</span>
+<span class="comment">% variables</span>
+<span class="comment">% ---------</span>
+<span class="comment">% h and k : grid spacing in space and time.</span>
+<span class="comment">% tau : stress</span>
+<span class="comment">% u_x and u_z : Displacement</span>
+<span class="comment">% v_x and v_z : velocities associated with the directions</span>
+<span class="comment">% rho : density</span>
+<span class="comment">% mu and lambda : Lame parameters</span>
+<span class="comment">% cp and cs : pressure wave and shear wave velocities</span>
+
+<span class="comment">%Note: We used the Ricker wavelet to implement the source time function</span>
+<span class="comment">%      Parameters related to explossion were set.</span>
+<span class="comment">%      cp and cs were also set</span>
+
+<span class="comment">%Comments: The results are cloer to what is expected</span>
+
+ clear <span class="string">all</span>
+ close <span class="string">all</span>
+
+m = 1000; N = 1000;  <span class="comment">%grid cells</span>
+
+<span class="comment">%density over the whole domain</span>
+rho = 2200; <span class="comment">%kg/m^3</span>
+
+<span class="comment">%space</span>
+a = 0; b = 3000;
+h = (b-a)/m;
+
+x = []; xn = [];
+z = []; zn = [];
+<span class="keyword">for</span> i = 1:m
+    x1 = (i-1)*h;   x = [x,x1];
+    xn1 =  (i-0.5)*h; xn  = [xn,xn1];
+    z1 = (i-1)*h;   z = [z,z1];
+    zn1 =  (i-0.5)*h; zn  = [zn,zn1];
+<span class="keyword">end</span>
+
+<span class="comment">%meshes</span>
+[X,Z] = meshgrid(x,z);
+[Xn,Zn] = meshgrid(xn,zn);
+[Xnx,Znx] = meshgrid(x,zn);
+[Xnz,Znz] = meshgrid(xn,z);
+
+mu1  = zeros(m); mu2 = zeros(m);
+lamb = zeros(m);
+coef = zeros(m);
+
+<span class="keyword">for</span> i = 1:m
+    lamb(i,:) = lambda(Xn(i,:),Zn(i,:));
+    mu1(i,:) = mu(Xn(i,:),Zn(i,:));
+    mu2(i,:) = mu(X(i,:),Z(i,:));
+    coef(i,:) = lamb(i,:) + 2*mu1(i,:);
+<span class="keyword">end</span>
+
+<span class="comment">%Dx and Dz</span>
+s = [-5/2 -3/2 -1/2 1/2 3/2 5/2]; <span class="comment">%stencil</span>
+w = weights(0,s,1); w1 = w(2,:);<span class="comment">%weights</span>
+
+Dz = (1/h)*circulant([w1(4:end),zeros(1,m-6),w1(1:3)],1); <span class="comment">%derivative operator 6th order</span>
+Dz = sparse(Dz); Dx = -Dz';
+
+<span class="comment">% Displacement initial values</span>
+v_x0 = zeros(m);
+v_z0 = zeros(m);
+
+<span class="comment">% Stress intial Values</span>
+tau_xx0 = zeros(m);
+tau_zz0 = zeros(m);
+tau_xz0 = zeros(m);
+
+<span class="comment">%time</span>
+at =0; bt = 0.45;
+k = (bt-at)/N; <span class="comment">%timestep</span>
+t = at:k:bt;
+
+tn = (0:N)*k;
+
+<span class="comment">% at (x,z) = (1650m, 1410m)</span>
+<span class="keyword">for</span> j = 1:m
+    <span class="keyword">if</span> x(j) == 1650
+        x_xp = j;
+    <span class="keyword">end</span>
+    <span class="keyword">if</span> z(j) == 1410
+        z_xp = j;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+x0 = 1500; <span class="comment">%m</span>
+z0 = 1500; <span class="comment">%m</span>
+
+S1 = zeros(m,m); S2 = S1;
+<span class="keyword">for</span> i = 1:m
+    S1(i,:) = Deltah(X(i,:)-x0,h);
+    S2(i,:) = Deltah(Z(i,:)-z0,h);
+<span class="keyword">end</span>
+explosion_site = h^2*(S1.*S2);
+
+u_x = zeros(m,m); u_xp = zeros(N,1);
+u_z = zeros(m,m); u_zp= zeros(N,1);
+
+<span class="comment">% computation of v_x, and v_z to the half time-level</span>
+v_x0 = v_x0 + 0.5*(k/rho)*(tau_xx0*Dx + Dz'*tau_xz0);
+v_z0 = v_z0 + 0.5*(k/rho)*(tau_xz0*Dz + Dx'*tau_zz0);
+
+<span class="comment">%transpose of the differentiation matrix</span>
+D_z = Dz'; D_x = Dx';
+
+<span class="comment">%lambda and mu coefficients</span>
+<span class="comment">%lc = k*lamb;</span>
+
+<span class="keyword">for</span> n  = 2:N+1
+
+    source = (Sourcetime(t(n)) - Sourcetime(t(n-1)))*explosion_site;
+
+    <span class="comment">%computation of tau_xx, tau_zz, tau_xz</span>
+    tau_xx0 = tau_xx0 + k*(coef.*(v_x0*Dz) + lamb.*D_z*v_z0) + source;
+    tau_zz0 = tau_zz0 + k*(lamb.*(v_x0*Dz) + coef.*D_z*v_z0) + source;
+
+    tau_xz0 = tau_xz0 + k*mu2.*(v_z0*(Dx) + D_x*v_x0);
+
+    <span class="comment">%computation of v_x, and v_z</span>
+    v_x0 = v_x0 + (k/rho)*(tau_xx0*Dx + D_z*tau_xz0);
+
+    v_z0 = v_z0 + (k/rho)*(tau_xz0*Dz + D_x*tau_zz0);
+
+    <span class="comment">%computation of u_x and u_z</span>
+    u_x = u_x + k*v_x0; u_xp(n) = u_x(x_xp,z_xp);
+    u_z = u_z + k*v_z0; u_zp(n) = u_z(x_xp,z_xp);
+
+    <span class="keyword">if</span> mod(n,10) == 0
+        figure(1)
+        p = pcolor(Xnx,Znx,u_x); set(p, <span class="string">'EdgeColor'</span>, <span class="string">'none'</span>);
+        xlabel(<span class="string">'x'</span>); ylabel(<span class="string">'z'</span>);
+        colormap(gray(100)); colorbar;
+        title({<span class="string">'u_x'</span>;[<span class="string">'Time = '</span>,sprintf(<span class="string">'%.4f'</span>,t(n)),<span class="string">' sec'</span>]});
+        set(gca,<span class="string">'YDir'</span>,<span class="string">'Reverse'</span>)
+        drawnow;
+    <span class="keyword">end</span>
+    <span class="comment">%snapnow</span>
+    <span class="comment">%disp(['u_x']);</span>
+
+     <span class="keyword">if</span> mod(n,10) == 0
+        figure(2)
+        p = pcolor(Xnx,Znx,u_z); set(p, <span class="string">'EdgeColor'</span>, <span class="string">'none'</span>);
+        xlabel(<span class="string">'x'</span>); ylabel(<span class="string">'z'</span>);
+        colormap(gray(100)); colorbar;
+        title({<span class="string">'u_z'</span>;[<span class="string">'Time = '</span>,sprintf(<span class="string">'%.4f'</span>,t(n)),<span class="string">' sec'</span>]});
+        drawnow;
+     <span class="keyword">end</span>
+        <span class="comment">%disp(['u_x']);</span>
+
+
+<span class="keyword">end</span>
+
+<span class="comment">%time-series plot of ux and uz</span>
+figure(3)
+plot(t, u_xp)
+xlabel(<span class="string">'time(sec)'</span>); ylabel(<span class="string">'displacement (millimeters)'</span>);
+title(<span class="string">'Tim-series of recorded displacements near (x,z) = (1650,1410)'</span>);
+hold <span class="string">on</span>
+plot(t, u_zp)
+legend(<span class="string">'u_x'</span>,<span class="string">'u_z'</span>);
+
+
+<span class="comment">%lambda</span>
+<span class="keyword">function</span> la = lambda(x,z)
+
+rho = 2200;
+n = size(x,2);
+
+<span class="keyword">for</span> i = 1:n
+    Cp(i) = CP(x(i),z(i));
+    Cs(i) = CS(x(i),z(i));
+<span class="keyword">end</span>
+
+la = rho*Cp.^2 - 2*rho*Cs.^2;
+<span class="keyword">end</span>
+
+<span class="comment">% mu</span>
+<span class="keyword">function</span> muu = mu(x,z)
+
+rho = 2200;
+n = size(x,2);
+
+<span class="keyword">for</span> i = 1:n
+    Cs(i) = CS(x(i),z(i));
+<span class="keyword">end</span>
+
+muu = rho*Cs.^2;
+<span class="keyword">end</span>
+
+<span class="comment">% Discrete delta function</span>
+<span class="keyword">function</span> delta = Deltah(ep,h)
+
+n = size(ep,2);
+
+<span class="keyword">for</span> i = 1:n
+
+    <span class="keyword">if</span> abs(ep(i)) &lt;= 2*h
+        delta(i) = (1/(4*h))*(1+cos((ep(i)*pi)/(2*h)));
+    <span class="keyword">elseif</span> abs(ep(i)) &gt; 2*h
+        delta(i) = 0;
+    <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">% derivative of source-time function</span>
+<span class="keyword">function</span> S = Sourcetime(t)
+t0 = 0.07; <span class="comment">%sec</span>
+fM = 16;   <span class="comment">%Hz</span>
+gamma = 5*10^6; <span class="comment">%Pa</span>
+S = gamma*(1 - 2*pi^2*fM^2*(t-t0)^2)*exp(-pi^2*fM^2*(t-t0)^2);
+<span class="keyword">end</span>
+
+
+<span class="comment">%pressure-wave velocity</span>
+<span class="keyword">function</span> cp = CP(x,z)
+
+<span class="keyword">if</span> ((1500 &lt;= x) &amp;&amp; (x &lt;= 2100)) &amp;&amp; ((1700 &lt;= z) &amp;&amp; (z &lt;= 1800))
+    cp = 1450; <span class="comment">%m/s</span>
+<span class="keyword">else</span>
+    cp = 3200; <span class="comment">%m/s</span>
+<span class="keyword">end</span>
+
+<span class="keyword">end</span>
+
+<span class="comment">%shear-wave velocity</span>
+<span class="keyword">function</span> cs = CS(x,z)
+
+<span class="keyword">if</span> ((1500 &lt;= x) &amp;&amp; (x &lt;= 2100)) &amp;&amp; ((1700 &lt;= z) &amp;&amp; (z &lt;= 1800))
+    cs = 0;   <span class="comment">%m/s</span>
+<span class="keyword">else</span>
+    cs = 1847.5; <span class="comment">%m/s</span>
+<span class="keyword">end</span>
+
+<span class="keyword">end</span>
+</pre><img vspace="5" hspace="5" src="final_project_01.png" alt=""> <img vspace="5" hspace="5" src="final_project_02.png" alt=""> <img vspace="5" hspace="5" src="final_project_03.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+% This program uses 6th order approximation of spartial derivatives. It
+% numerically solves the elastic wave equation.
+% variables
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+% h and k : grid spacing in space and time.
+% tau : stress
+% u_x and u_z : Displacement
+% v_x and v_z : velocities associated with the directions
+% rho : density
+% mu and lambda : Lame parameters
+% cp and cs : pressure wave and shear wave velocities
+
+%Note: We used the Ricker wavelet to implement the source time function
+%      Parameters related to explossion were set.
+%      cp and cs were also set
+
+%Comments: The results are cloer to what is expected
+
+ clear all
+ close all
+
+m = 1000; N = 1000;  %grid cells
+
+%density over the whole domain
+rho = 2200; %kg/m^3
+
+%space
+a = 0; b = 3000;
+h = (b-a)/m;
+
+x = []; xn = [];
+z = []; zn = [];
+for i = 1:m
+    x1 = (i-1)*h;   x = [x,x1];
+    xn1 =  (i-0.5)*h; xn  = [xn,xn1];
+    z1 = (i-1)*h;   z = [z,z1];
+    zn1 =  (i-0.5)*h; zn  = [zn,zn1];
+end
+
+%meshes
+[X,Z] = meshgrid(x,z);
+[Xn,Zn] = meshgrid(xn,zn);
+[Xnx,Znx] = meshgrid(x,zn);
+[Xnz,Znz] = meshgrid(xn,z);
+
+mu1  = zeros(m); mu2 = zeros(m);
+lamb = zeros(m);
+coef = zeros(m);
+
+for i = 1:m
+    lamb(i,:) = lambda(Xn(i,:),Zn(i,:));
+    mu1(i,:) = mu(Xn(i,:),Zn(i,:));
+    mu2(i,:) = mu(X(i,:),Z(i,:));
+    coef(i,:) = lamb(i,:) + 2*mu1(i,:);
+end
+
+%Dx and Dz
+s = [-5/2 -3/2 -1/2 1/2 3/2 5/2]; %stencil
+w = weights(0,s,1); w1 = w(2,:);%weights
+
+Dz = (1/h)*circulant([w1(4:end),zeros(1,m-6),w1(1:3)],1); %derivative operator 6th order
+Dz = sparse(Dz); Dx = -Dz';
+
+% Displacement initial values
+v_x0 = zeros(m);
+v_z0 = zeros(m);
+
+% Stress intial Values
+tau_xx0 = zeros(m);
+tau_zz0 = zeros(m);
+tau_xz0 = zeros(m);
+
+%time
+at =0; bt = 0.45;
+k = (bt-at)/N; %timestep
+t = at:k:bt;
+
+tn = (0:N)*k;
+
+% at (x,z) = (1650m, 1410m)
+for j = 1:m
+    if x(j) == 1650
+        x_xp = j;
+    end
+    if z(j) == 1410
+        z_xp = j;
+    end
+end
+
+x0 = 1500; %m
+z0 = 1500; %m
+
+S1 = zeros(m,m); S2 = S1;
+for i = 1:m
+    S1(i,:) = Deltah(X(i,:)-x0,h);
+    S2(i,:) = Deltah(Z(i,:)-z0,h);
+end
+explosion_site = h^2*(S1.*S2);
+
+u_x = zeros(m,m); u_xp = zeros(N,1);
+u_z = zeros(m,m); u_zp= zeros(N,1);
+
+% computation of v_x, and v_z to the half time-level
+v_x0 = v_x0 + 0.5*(k/rho)*(tau_xx0*Dx + Dz'*tau_xz0);
+v_z0 = v_z0 + 0.5*(k/rho)*(tau_xz0*Dz + Dx'*tau_zz0);
+
+%transpose of the differentiation matrix
+D_z = Dz'; D_x = Dx';
+
+%lambda and mu coefficients
+%lc = k*lamb;
+
+for n  = 2:N+1
+   
+    source = (Sourcetime(t(n)) - Sourcetime(t(n-1)))*explosion_site;
+    
+    %computation of tau_xx, tau_zz, tau_xz
+    tau_xx0 = tau_xx0 + k*(coef.*(v_x0*Dz) + lamb.*D_z*v_z0) + source;
+    tau_zz0 = tau_zz0 + k*(lamb.*(v_x0*Dz) + coef.*D_z*v_z0) + source;
+  
+    tau_xz0 = tau_xz0 + k*mu2.*(v_z0*(Dx) + D_x*v_x0);
+    
+    %computation of v_x, and v_z
+    v_x0 = v_x0 + (k/rho)*(tau_xx0*Dx + D_z*tau_xz0);
+   
+    v_z0 = v_z0 + (k/rho)*(tau_xz0*Dz + D_x*tau_zz0);
+    
+    %computation of u_x and u_z
+    u_x = u_x + k*v_x0; u_xp(n) = u_x(x_xp,z_xp);
+    u_z = u_z + k*v_z0; u_zp(n) = u_z(x_xp,z_xp);
+    
+    if mod(n,10) == 0
+        figure(1)
+        p = pcolor(Xnx,Znx,u_x); set(p, 'EdgeColor', 'none');
+        xlabel('x'); ylabel('z');
+        colormap(gray(100)); colorbar;
+        title({'u_x';['Time = ',sprintf('%.4f',t(n)),' sec']});
+        set(gca,'YDir','Reverse')
+        drawnow;
+    end
+    %snapnow
+    %disp(['u_x']);
+    
+     if mod(n,10) == 0
+        figure(2)
+        p = pcolor(Xnx,Znx,u_z); set(p, 'EdgeColor', 'none');
+        xlabel('x'); ylabel('z'); 
+        colormap(gray(100)); colorbar;
+        title({'u_z';['Time = ',sprintf('%.4f',t(n)),' sec']});
+        drawnow;
+     end
+        %disp(['u_x']);
+
+    
+end
+
+%time-series plot of ux and uz
+figure(3)
+plot(t, u_xp)
+xlabel('time(sec)'); ylabel('displacement (millimeters)');
+title('Tim-series of recorded displacements near (x,z) = (1650,1410)');
+hold on
+plot(t, u_zp)
+legend('u_x','u_z');
+
+
+%lambda
+function la = lambda(x,z)
+
+rho = 2200;
+n = size(x,2);
+
+for i = 1:n
+    Cp(i) = CP(x(i),z(i));
+    Cs(i) = CS(x(i),z(i));
+end
+
+la = rho*Cp.^2 - 2*rho*Cs.^2;
+end
+
+% mu
+function muu = mu(x,z)
+
+rho = 2200;
+n = size(x,2);
+
+for i = 1:n
+    Cs(i) = CS(x(i),z(i));
+end
+
+muu = rho*Cs.^2;
+end
+
+% Discrete delta function
+function delta = Deltah(ep,h)
+
+n = size(ep,2);
+
+for i = 1:n
+    
+    if abs(ep(i)) <= 2*h
+        delta(i) = (1/(4*h))*(1+cos((ep(i)*pi)/(2*h)));
+    elseif abs(ep(i)) > 2*h
+        delta(i) = 0;
+    end
+    
+end
+end
+
+% derivative of source-time function
+function S = Sourcetime(t)
+t0 = 0.07; %sec
+fM = 16;   %Hz
+gamma = 5*10^6; %Pa
+S = gamma*(1 - 2*pi^2*fM^2*(t-t0)^2)*exp(-pi^2*fM^2*(t-t0)^2);
+end
+
+
+%pressure-wave velocity
+function cp = CP(x,z)
+
+if ((1500 <= x) && (x <= 2100)) && ((1700 <= z) && (z <= 1800))
+    cp = 1450; %m/s
+else
+    cp = 3200; %m/s
+end
+
+end
+
+%shear-wave velocity
+function cs = CS(x,z)
+
+if ((1500 <= x) && (x <= 2100)) && ((1700 <= z) && (z <= 1800))
+    cs = 0;   %m/s
+else
+    cs = 1847.5; %m/s
+end
+
+end
+##### SOURCE END #####
+--></body></html>

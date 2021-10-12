@@ -1,0 +1,66 @@
+\documentclass{article}
+
+\input{../macros.tex}
+
+\usepackage{xlop}
+
+\begin{document}
+
+\begin{center}
+{\Large Homework \#3} \\
+\vskip 0.2cm
+{\large Math 465/565}
+\vskip 0.5cm
+\end{center}
+
+A few notes about this homework.
+\begin{itemize}
+\item You will be graded on your presentation as well as the content of the work.  This means that all of your plots should have axis labels, a title and legends, and any other annotation that makes it clear what you are demonstrating.
+\item You may submit your homework to BlackBoard.  Please submit a PDF of your homework. 
+\item Students in 465 may do the problems for 565 for extra credit.
+\end{itemize}
+
+\begin{enumerate}
+
+\item Suppose the sequence $\{x_n\}$ converges linearly to the limit $\xbar$ with asymptotic error constant $\lambda$.  Further, suppose that $x_{n+1}-\xbar$, $x_n - \xbar$ and $x_{n-1} - \xbar$ are all the same sign.  Show that 
+\begin{equation}
+\frac{x_{n+1} - x_n}{x_{n} - x_{n-1}} \approx \lambda.
+\end{equation}
+
+\item A sequence $\{x_n\}$ converges {\em superlinearly} to $\xbar$ provided
+\begin{equation}
+\lim_{n \rightarrow \infty} \frac{\left|x_{n+1} - \xbar\ \right|}{\left| x_n - \xbar\right|} = 0
+\end{equation}
+Show that if $x_n \rightarrow \xbar$ with order of convergence $\alpha > 1$, then $\{x_n\}$ convergences superlinearly.
+
+\item Suppose that $\{x_n\}$ converges superlinearly to $\xbar$.  Show that
+\begin{equation}
+\lim_{n \rightarrow \infty} \frac{\left|x_{n+1} - x_n\ \right|}{\left| x_n - \xbar\right|} = 1
+\end{equation}
+Why might this be useful when developing root-finding schemes? 
+
+
+\item Use the Bisection method to find the root of the equation $f(x) = x^2 - \num{1e51}$.  Estimate the number of iterations required to reach a tolerance of $\tau = \num{1e-10}$.  Can you actually achieve this tolerance?  Why or why not?  Choose a more appropriate tolderance. 
+
+\item For the "Depth of submersion" problem, we came up with the model
+\begin{equation}
+f(x) = \frac{1}{3}x^3 - x^2 + \frac{4}{3}\beta
+\end{equation}
+where $0 \le \beta \le 1$ and $0 \le x \le 2$. Solve $f(x) = 0$ using a Fixed Point iteration scheme.  Find at least three different functions $g(x)$ you can use and decide which ones converge to the fixed point.  Solve the problem for $\beta = 0.1$ and $\beta = 0.95$.  
+
+\item Use the "Depth of submersion" problem we developed in class to determine the depth to which a glass marble of radius $2 \si{\centi\metre}$ and density $0.040 \si{\gram\per\cubic\centi\metre}$ sinks in the water of density 0.998 $\si{\gram\per\cubic\centi\metre}$.  You may use any method discussed in class, but you must use your own code.  
+
+\item ({\bf Math 565}) Verify that $x = \sqrt{a}$ is a fixed point of the function
+\begin{equation}
+g(x) = \frac{1}{2}\left(x + \frac{a}{x}\right)
+\end{equation}
+Determine the order of convergence and the asymptotic error constant for the sequence $x_n = g(x_{n-1})$.  
+
+\item ({\bf Math 565.}) TBA.
+
+
+
+
+\end{enumerate}
+
+\end{document}

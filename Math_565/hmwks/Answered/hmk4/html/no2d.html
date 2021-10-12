@@ -1,0 +1,283 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>no2d</title><meta name="generator" content="MATLAB 9.8"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-11-24"><meta name="DC.source" content="no2d.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="comment">%Code accelerates the convergence of a fixed-point algorithm using</span>
+<span class="comment">%steffensens method.</span>
+
+clear <span class="string">all</span>;
+close <span class="string">all</span>;
+
+<span class="comment">%tolerance</span>
+tol = 1e-8;
+
+<span class="comment">%intial guess</span>
+x0 = 0.2;
+
+kmax = 100;
+
+<span class="comment">%function g(x,y)</span>
+g=@(x) (3+3*x-x^2)^(1/3);
+
+fprintf(<span class="string">'Below is the solution for the root finding problem;\n'</span>);
+
+fprintf(<span class="string">'    k          x_k                e_n\n'</span>);
+
+[xroot, en] = steffensens(g,x0,tol,kmax)
+
+<span class="comment">%Computing e_n</span>
+en0 = [];
+<span class="keyword">for</span> k = 1:length(en)-1
+   en3 = en(k);
+   en0 = [en0,en3];
+<span class="keyword">end</span>
+
+<span class="comment">%computing e_n+1</span>
+en1 = [];
+<span class="keyword">for</span> k = 2:length(en)
+   en2 = en(k);
+   en1 = [en1,en2];
+<span class="keyword">end</span>
+
+figure(1);
+loglog(en0,en1);
+title(<span class="string">"A graph of e_n_+_1 against e_n"</span>);
+ylabel(<span class="string">"e_n_+_1"</span>);
+xlabel(<span class="string">"e_n"</span>);
+
+
+slope_steffensens=polyfit(log(en0),log(en1),1);
+slope_steffensens = slope_steffensens(1);
+fprintf(<span class="string">'slope_steffensens = %f\n'</span>,slope_steffensens(1));
+fprintf(<span class="string">'Hence the steffensens is quadratically convergent since its slope is approximately 2.\n'</span>);
+<span class="comment">%fixed point</span>
+[en] = fixed_point(g,x0,tol,kmax);
+
+<span class="comment">%computing e_n</span>
+enf0 = [];
+<span class="keyword">for</span> k = 1:length(en)-1
+   en3 = en(k);
+   enf0 = [enf0,en3];
+<span class="keyword">end</span>
+
+<span class="comment">%computing e_n+1</span>
+enf1 = [];
+<span class="keyword">for</span> k = 2:length(en)
+   en2 = en(k);
+   enf1 = [enf1,en2];
+<span class="keyword">end</span>
+
+ hold <span class="string">on</span>
+
+loglog(enf0,enf1);
+legend(<span class="string">'Steffensen'</span>,<span class="string">'fixed point'</span>)
+
+slope_fixed_point=polyfit(log(enf0),log(enf1),1);
+slope_fixed_point = slope_fixed_point(1);
+fprintf(<span class="string">'slope_fixed_point = %f\n'</span>,slope_fixed_point(1));
+fprintf(<span class="string">'Hence the fixed point is linearly convergent since its slope is approximately 1.\n'</span>);
+
+<span class="comment">%fixed point algorithm</span>
+<span class="keyword">function</span> [en]=fixed_point(g,x0,tol,kmax)
+
+xk = x0;
+<span class="keyword">for</span> k = 1:kmax
+    xkp1 = g(xk);
+    <span class="keyword">if</span> abs(xkp1 - xk) &lt; tol
+        fprintf(<span class="string">'Tolerance achieved\n'</span>);
+        xroot = xkp1;
+        <span class="keyword">break</span>;
+    <span class="keyword">end</span>
+    xk = xkp1;
+    en(k) = abs(xkp1 - sqrt(3));
+<span class="keyword">end</span>
+<span class="comment">%fprintf('\n');</span>
+<span class="comment">%fprintf('Root is %24.16f\n',xkp1);</span>
+<span class="comment">%fprintf('Number of iterations : %d\n',k);</span>
+
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">Below is the solution for the root finding problem;
+    k          x_k                e_n
+    1 1.7778344886912885e+00,   1.5778e+00
+    2 1.7320380917493903e+00,   4.5796e-02
+    3 1.7320508075679841e+00,   1.2716e-05
+    4 1.7320508075688774e+00,   8.9329e-13
+Tolerance achieved
+
+xroot =
+
+    1.7321
+
+
+en =
+
+    1.5778    0.0458    0.0000    0.0000
+
+slope_steffensens = 2.086567
+Hence the steffensens is quadratically convergent since its slope is approximately 2.
+Tolerance achieved
+slope_fixed_point = 0.971838
+Hence the fixed point is linearly convergent since its slope is approximately 1.
+</pre><img vspace="5" hspace="5" src="no2d_01.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%Code accelerates the convergence of a fixed-point algorithm using
+%steffensens method.
+
+clear all; 
+close all;
+
+%tolerance
+tol = 1e-8;
+
+%intial guess 
+x0 = 0.2;
+
+kmax = 100;
+
+%function g(x,y)
+g=@(x) (3+3*x-x^2)^(1/3);
+
+fprintf('Below is the solution for the root finding problem;\n');
+
+fprintf('    k          x_k                e_n\n');
+
+[xroot, en] = steffensens(g,x0,tol,kmax)
+
+%Computing e_n
+en0 = [];
+for k = 1:length(en)-1
+   en3 = en(k);
+   en0 = [en0,en3];
+end
+ 
+%computing e_n+1
+en1 = [];
+for k = 2:length(en)
+   en2 = en(k);
+   en1 = [en1,en2];
+end
+ 
+figure(1);
+loglog(en0,en1);
+title("A graph of e_n_+_1 against e_n");
+ylabel("e_n_+_1");
+xlabel("e_n");
+
+
+slope_steffensens=polyfit(log(en0),log(en1),1);
+slope_steffensens = slope_steffensens(1);
+fprintf('slope_steffensens = %f\n',slope_steffensens(1));
+fprintf('Hence the steffensens is quadratically convergent since its slope is approximately 2.\n');
+%fixed point
+[en] = fixed_point(g,x0,tol,kmax);
+
+%computing e_n
+enf0 = [];
+for k = 1:length(en)-1
+   en3 = en(k);
+   enf0 = [enf0,en3];
+end
+
+%computing e_n+1
+enf1 = [];
+for k = 2:length(en)
+   en2 = en(k);
+   enf1 = [enf1,en2];
+end
+
+ hold on
+ 
+loglog(enf0,enf1);
+legend('Steffensen','fixed point')
+
+slope_fixed_point=polyfit(log(enf0),log(enf1),1);
+slope_fixed_point = slope_fixed_point(1);
+fprintf('slope_fixed_point = %f\n',slope_fixed_point(1));
+fprintf('Hence the fixed point is linearly convergent since its slope is approximately 1.\n');
+
+%fixed point algorithm
+function [en]=fixed_point(g,x0,tol,kmax)
+
+xk = x0;
+for k = 1:kmax
+    xkp1 = g(xk);
+    if abs(xkp1 - xk) < tol
+        fprintf('Tolerance achieved\n');
+        xroot = xkp1;
+        break;
+    end
+    xk = xkp1;
+    en(k) = abs(xkp1 - sqrt(3));
+end
+%fprintf('\n');
+%fprintf('Root is %24.16f\n',xkp1);
+%fprintf('Number of iterations : %d\n',k);
+    
+end
+##### SOURCE END #####
+--></body></html>

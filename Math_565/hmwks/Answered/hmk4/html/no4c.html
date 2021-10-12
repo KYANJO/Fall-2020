@@ -1,0 +1,182 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>no4c</title><meta name="generator" content="MATLAB 9.8"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-11-26"><meta name="DC.source" content="no4c.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput">clear <span class="string">all</span>;
+close <span class="string">all</span>;
+
+A = [1e-10 4;2 1];
+
+b = [1;1];
+
+<span class="comment">%Exact solution</span>
+fprintf(<span class="string">'True Solution;\n'</span>);
+U_exact = A\b
+
+<span class="comment">%LU without partial pivoting</span>
+[L, U] = lu_wopp(A);
+fprintf(<span class="string">'Solution Obtained without partial pivoting;\n'</span>);
+x_opp = lu_solve1(L,U,b)
+
+<span class="comment">%LU with partial pivoting</span>
+[L,U,P,pv] = lu_bug_pp(A);
+fprintf(<span class="string">'Solution Obtained with partial pivoting;\n'</span>);
+x_wpp = lu_solve(L,U,b,pv)
+
+<span class="comment">%Error of LU with partial pivoting</span>
+fprintf(<span class="string">'Error Obtained with partial pivoting;\n'</span>);
+error_wpp = abs(U_exact - x_wpp)
+fprintf(<span class="string">'Error Obtained without partial pivoting;\n'</span>);
+error_wopp = abs(U_exact - x_opp)
+
+fprintf(<span class="string">'Using partial pivoting we obatin exact values because we obtain zero error,\n while without partial pivoting we obtained a slightly smaller error\n'</span>);
+
+fprintf(<span class="string">'d). While doing LU decomposition, we need to create an upper triangular matrix U, by making\n  entry a_21 = 0 in matrix A. We shall have to perform a calculation R2 &lt;-- (1e-10)R2  - 2R1,\n which will become (1e-10)(1) -2(4), so we shall have a very small number in magnitude minus\n a big number in magnitude: 8. Normally this must give us -8, but due to catastrophic loss\n of accuracy we obtain -7.9999999998 hence catastrophic cancellation.\n'</span>);
+</pre><pre class="codeoutput">True Solution;
+
+U_exact =
+
+    0.3750
+    0.2500
+
+Solution Obtained without partial pivoting;
+
+x_opp =
+
+    0.3750
+    0.2500
+
+Solution Obtained with partial pivoting;
+
+x_wpp =
+
+    0.3750
+    0.2500
+
+Error Obtained with partial pivoting;
+
+error_wpp =
+
+     0
+     0
+
+Error Obtained without partial pivoting;
+
+error_wopp =
+
+   1.0e-07 *
+
+    0.3102
+         0
+
+Using partial pivoting we obatin exact values because we obtain zero error,
+ while without partial pivoting we obtained a slightly smaller error
+d). While doing LU decomposition, we need to create an upper triangular matrix U, by making
+  entry a_21 = 0 in matrix A. We shall have to perform a calculation R2 &lt;-- (1e-10)R2  - 2R1,
+ which will become (1e-10)(1) -2(4), so we shall have a very small number in magnitude minus
+ a big number in magnitude: 8. Normally this must give us -8, but due to catastrophic loss
+ of accuracy we obtain -7.9999999998 hence catastrophic cancellation.
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clear all; 
+close all;
+
+A = [1e-10 4;2 1];
+
+b = [1;1];
+
+%Exact solution
+fprintf('True Solution;\n');
+U_exact = A\b
+
+%LU without partial pivoting
+[L, U] = lu_wopp(A);
+fprintf('Solution Obtained without partial pivoting;\n');
+x_opp = lu_solve1(L,U,b)
+
+%LU with partial pivoting
+[L,U,P,pv] = lu_bug_pp(A);
+fprintf('Solution Obtained with partial pivoting;\n');
+x_wpp = lu_solve(L,U,b,pv)
+
+%Error of LU with partial pivoting
+fprintf('Error Obtained with partial pivoting;\n');
+error_wpp = abs(U_exact - x_wpp)
+fprintf('Error Obtained without partial pivoting;\n');
+error_wopp = abs(U_exact - x_opp)
+
+fprintf('Using partial pivoting we obatin exact values because we obtain zero error,\n while without partial pivoting we obtained a slightly smaller error\n');
+
+fprintf('d). While doing LU decomposition, we need to create an upper triangular matrix U, by making\n  entry a_21 = 0 in matrix A. We shall have to perform a calculation R2 <REPLACE_WITH_DASH_DASH (1e-10)R2  - 2R1,\n which will become (1e-10)(1) -2(4), so we shall have a very small number in magnitude minus\n a big number in magnitude: 8. Normally this must give us -8, but due to catastrophic loss\n of accuracy we obtain -7.9999999998 hence catastrophic cancellation.\n');
+
+
+
+
+ 
+##### SOURCE END #####
+--></body></html>

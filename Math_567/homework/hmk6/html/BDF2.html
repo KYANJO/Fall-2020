@@ -1,0 +1,218 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>BDF2</title><meta name="generator" content="MATLAB 9.8"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-12-08"><meta name="DC.source" content="BDF2.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="comment">% The program uses BDF2 for the time integratorl instead of the trapezoidal</span>
+<span class="comment">% Rule.</span>
+
+<span class="comment">% f : function representing intial condition</span>
+<span class="comment">% g0 and g1 : function represents boundary conditions</span>
+<span class="comment">% tspan : time span over</span>
+<span class="comment">% N : Number of time steps</span>
+<span class="comment">% m : Number of points for the uniform spatial discretisation.</span>
+<span class="comment">% Return</span>
+<span class="comment">% u : Approximate solution at each time step (matrix)</span>
+<span class="comment">% t : Vector containing all time steps</span>
+<span class="comment">% x : Vector containing the spatial discretization.% This function Numerically solves the 1-D heat equation using the</span>
+<span class="comment">% Crank-Nicolson scheme</span>
+<span class="comment">% input</span>
+
+
+<span class="keyword">function</span> [u,t,x] = BDF2(f,g0,g1,tspan,alp,N,m)
+
+h = 1/(m+1);
+k = tspan/N;
+r = (2*alp*k)/(3*h^2);
+
+<span class="comment">%space and time steps</span>
+x = 0:h:1;
+t = 0:k:tspan;
+
+<span class="comment">%Crank-Nicolson</span>
+u1 = cnhteq(f,g0,g1,tspan,alp,N,m);
+
+U = zeros(m+2,m+2);
+gl = zeros(m,1);
+
+U0 = f(x);
+U(1,:) = U0;
+U1 = u1(2,:);
+U(2,:) = U1;
+
+<span class="comment">%Matrix Coefficients</span>
+a= (1+2*r);
+b = r;
+
+<span class="comment">% Using the sparse library to transform A</span>
+A = sparse(toeplitz([a -b zeros(1, m-2)]));
+
+<span class="keyword">for</span> n = 3: N+1
+
+    gl(1) = g0(t(n));
+    gl(m) = g1(t(n));
+
+    Un1 = U0(2:m+1)';
+    Un2= U1(2:m+1)';
+
+    <span class="comment">% The Right Hand Side</span>
+    B = (4/3)*Un2 - (1/3)*Un1 + r*gl;
+
+    <span class="comment">% Solving the linear sysytem for the interior points</span>
+
+    Un = A\B;
+
+    <span class="comment">% Treating the boundary conditions</span>
+    Un = [gl(1), Un', gl(m)];
+    U(n,:) = Un;
+
+    <span class="comment">%update solution</span>
+    U0 = U1;
+    U1 = Un;
+
+<span class="keyword">end</span>
+u = U;
+<span class="keyword">end</span>
+</pre><pre class="codeoutput error">Not enough input arguments.
+
+Error in BDF2 (line 19)
+h = 1/(m+1);
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+% The program uses BDF2 for the time integratorl instead of the trapezoidal
+% Rule.
+
+% f : function representing intial condition
+% g0 and g1 : function represents boundary conditions
+% tspan : time span over
+% N : Number of time steps
+% m : Number of points for the uniform spatial discretisation.
+% Return
+% u : Approximate solution at each time step (matrix)
+% t : Vector containing all time steps
+% x : Vector containing the spatial discretization.% This function Numerically solves the 1-D heat equation using the
+% Crank-Nicolson scheme
+% input
+
+
+function [u,t,x] = BDF2(f,g0,g1,tspan,alp,N,m)
+
+h = 1/(m+1);
+k = tspan/N;
+r = (2*alp*k)/(3*h^2);
+
+%space and time steps
+x = 0:h:1;
+t = 0:k:tspan;
+
+%Crank-Nicolson
+u1 = cnhteq(f,g0,g1,tspan,alp,N,m);
+
+U = zeros(m+2,m+2);
+gl = zeros(m,1);
+
+U0 = f(x);
+U(1,:) = U0;
+U1 = u1(2,:);
+U(2,:) = U1;
+
+%Matrix Coefficients
+a= (1+2*r);
+b = r;
+
+% Using the sparse library to transform A
+A = sparse(toeplitz([a -b zeros(1, m-2)]));  
+
+for n = 3: N+1
+    
+    gl(1) = g0(t(n));
+    gl(m) = g1(t(n));
+    
+    Un1 = U0(2:m+1)';
+    Un2= U1(2:m+1)';
+    
+    % The Right Hand Side
+    B = (4/3)*Un2 - (1/3)*Un1 + r*gl;
+    
+    % Solving the linear sysytem for the interior points
+
+    Un = A\B;
+
+    % Treating the boundary conditions
+    Un = [gl(1), Un', gl(m)];
+    U(n,:) = Un;
+    
+    %update solution
+    U0 = U1;
+    U1 = Un;
+    
+end
+u = U;
+end
+
+##### SOURCE END #####
+--></body></html>
