@@ -1,0 +1,120 @@
+\documentclass[11.8pt,a4paper]{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%% packages %%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage[all]{xy}
+\usepackage{tikz}
+\usepackage{verbatim}
+\usepackage[left=2cm,right=2cm,top=3cm,bottom=2.5cm]{geometry}
+\usepackage{hyperref}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{psfrag}
+
+%%%%%%%%%%%%%%%%%%%%% students data %%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\student}{Brian Kyanjo}
+\newcommand{\course}{OPERATIONS RESEARCH}
+\newcommand{\assignment}{1}
+
+%%%%%%%%%%%%%%%%%%% using theorem style %%%%%%%%%%%%%%%%%%%%
+\newtheorem{thm}{Theorem}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{exa}[thm]{Example}
+\newtheorem{rem}[thm]{Remark}
+\newtheorem{coro}[thm]{Corollary}
+\newtheorem{quest}{Question}[section]
+
+%%%%%%%%%%%%%%  Shortcut for usual set of numbers  %%%%%%%%%%%
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%555
+\begin{document}
+	
+	%%%%%%%%%%%%%%%%%%%%%%% title page %%%%%%%%%%%%%%%%%%%%%%%%%%
+	\thispagestyle{empty}
+	\begin{center}
+		\huge\textbf{BOISE STATE UNIVERSITY \\}
+		
+			\small\textbf{(1910 University Dr. Boise, ID 83725)}
+		%\vspace{1.0cm}
+	\end{center}	
+	%%%%%%%%%%%%%%%%%%%%% assignment information %%%%%%%%%%%%%%%%
+	\noindent
+	\rule{17cm}{0.2cm}\\[0.05cm]
+	\begin{center}
+		RESEARCH PROJECT PROPOSAL
+	\end{center}
+	\rule{17cm}{0.05cm}
+	\vspace{0.5cm}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%555
+\noindent\\
+\underline{Topic}: Modeling and optimization of a hybrid wind/PV/diesel system
+connected to the electricity grid in developing countries in Africa: Using HOMER, Genetic Algorithm (GA) and Matlab\hfill\\
+
+\noindent\underline{Student}: Brian KYANJO\hfill \underline{Email}: briankyanjo@u.boisestate.edu \hfill Date: \today\\
+\rule{17cm}{0.05cm}
+\section{Context and problem statement}
+Access to energy is a strategic priority in all regions of the world and particular developing countries in Africa. Long-term energy supply and demand forecasting is of utmost importance in Africa due to the steady rise in energy requirements, lack of sufficient resources, high reliance on fossil fuels to meet these requirements, and global concerns about carbon-induced environmental issues (Ouedraogo et al., 2017). Still today, million of people do not have access to modern energy and depend on "traditional biomass" and coal as the main source of fuel (UN Commission, 2012). The lack of access to clean energy (the energy sector is responsible for two thirds of greenhouse gas emissions), affordable and reliable hinders human and economic development and is a major obstacle to Millennium Development Goals (UN Commission, 2012).
+
+In this logic, African countries have to develop new technologies especially in terms of energy and environment finally to go with a world of 21st century in perpetual evolution. For instance, the geographical situation of the continent favors the development of the use of solar energy. Indeed, given the importance of the intensity of radiation received and the duration of sunshine that exceeds ten hours a day for several months, Africa can cover some of its solar energy needs. The production of electricity is therefore necessarily, despite an innocuous appearance. The excessive use of a world of production strongly accentuates the harmful effect associated with it and it appears that the diversification of resources is a solution to be promoted. One of the solutions one could discuss is a hybrid system involving a hybrid power generation system at a lower cost going with the current issue of reducing climate change, hence the topic. Mathematics tools like MATLAB, HOMER software and Genetic Algorithm can be used to model and optimize an hybrid solar photovoltaic, wind and diesel system. The reason for a hybrid system is to balance financial concerns which are a particular issue in poor countries with environmental concerns.
+\section{Background and motivation}
+One of the problem with solar energy is that the supply is not steady enough, even when the sun shines for ten hours a day, it does not shine at night, so the usability of such sources depends on the provision of storage facilities. The use of renewable energy sources induces the concept of electricity storage due to the intermittent possibility of resource. The storage is therefore much diversified: stationary applications connected or not to the network, in particular, the cities geographically isolated and not connected to the network integrating a renewable source (UN Commission, 2012). 
+
+Various kinds of hybrid schemes are already in operation and a significant amount of research has been done in this field. For instance, for Boualem BOUKEZA (2014), the photovoltaic generator connected to the electrical network associating a parallel active filter makes it possible to improve the quality of the energy. The decentralized production they used adds service by participating in improving the quality of energy while injecting power from renewable energies and can prevent the spread of harmonic pollution on great distances. \\
+In other hand, Vamina HASNI et Ma. (2010) said that to secure the autonomous hybrid network, the intervention of a complementary source such a generator was necessary. As part of research efforts to address the major energy-related problems of developing countries, Michael S. Okundamiya et al. comprehensively analyses the current status and underlying principles of various optimization modeling technologies and proposes the use of hybrid metaheuristic algorithms to assess the optimal solutions of hybrid power systems (Okundamiya et al., 2017).\\
+
+Recently, to reduce the Total System Net Preset Cost (TNPC), Cost of Energy (COE), unmet load, CO2 emissions, VendotiSuresh et al.(2020), use Genetic Algorithm (GA) and HOMER Pro Software in Modelling and optimization of an off-grid hybrid renewable energy system for electrification in a rural areas(Suresh et al., 2020). Compared to HOMER, combination-1 GA-based HRES (biogas+biomass+solar+ wind+ fuel cell with battery) was the best solution providing energy at a minimum energy cost of 0.163 dollars per KWH with 0 percent unmet load. 
+
+Many other authors worked on the topic and this study aims to use an hybrid system (wind / PV /Diesel) as generator. The role of a hybrid system (wind / PV / Diesel) of uninterrupted electricity production in isolated regions is not only to bring "energy power", but also a tool for the social and economic development of rural areas. The number of kilowatt-hours produced may seem insignificant to the country's energy production capacity, but these dozens or hundreds of kilowatt-hours can revive all the hope of a village or community. The hybrid wind/ PV / Diesel generator with a storage system is provided by lead-acid batteries. For this, the optimal storage sizing is based on the component modeling part. The maturity of this technology and its low cost are the main reasons for the use of storage.
+\section{study plan}
+We would like to finish this study in no more than four (04) years:
+\begin{itemize}
+	\item The first months will be used acquire the necessary background knowledge.. Doing bibliographic research, learning in a company or in laboratories for the acquisition of knowledge for the good realization of the PhD. And also improve my skills for Matlab simulation, HOMER software and Genetic Algorithm (GA)
+	\item Make a study of the different systems (wind, solar photovoltaic and diesel) and set up a device responding to the problem by offering a test walk. This will make it possible to propose an alternative, particularly in the case where the use of this type of hybridization is problematic or limited.
+	\item And then set up scenarios to optimize the system (the different possible combinations). This will enable strategies to be put in place for a more efficient operation.
+\end{itemize}
+ Hybrid systems (wind / PV / Diesel) well suited to decentralized electricity production can help solve a problem of energy deficit. The interest of this work is to maintain a level of reliability with minimum cost thanks to an optimal sizing of the hybrid system. For this reason, we will present a method of optimal sizing of a hybrid system of electricity production with a fixed level of reliability.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{thebibliography}{99}
+	\bibitem{rome1} Ouedraogo, Nadia S. {\em Africa energy future: Alternative scenarios and their implications for sustainable development strategies.} Energy Policy 106 (2017): 457-471.
+	\bibitem{notes} United Nations Economic Commission for North Africa: {\em Renewable Energy Sectors in North Africa: Current situation and perspectives.} , September 2012
+	
+	\bibitem{norman}  Okundamiya, Michael S., Joy O. Emagbetere, and Emmanuel A. Ogujor {\em Optimisation models for hybrid energy systems–a review} In Proceedings of the 2017 IEEE 3rd International Conference on Electro-Technology for National Development (NIGERCON), pp. 878-887. 2017. 
+	\bibitem{rome2} Suresh, Vendoti, M. Muralidhar, and R. Kiranmayi {\em Modelling and optimization of an off-grid hybrid renewable energy system for electrification in a rural areas} , Energy Reports 6 (2020): 594-604.	
+\end{thebibliography}
+\end{document}
